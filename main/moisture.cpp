@@ -11,7 +11,6 @@ float getMoisture(){
   const int water = 0; // Fix me!!!
   float val;
   val = analogRead(34);
-  Serial.print(val);
   return val;
 }
 

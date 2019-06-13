@@ -17,6 +17,8 @@ void displaySensorDetails();
 void configureSensor();
 void printLight();
 extern Coap coap;
+extern volatile uint32_t flowPulse;
+extern IPAddress serverAddress;
 
 class Sensors {
   private:

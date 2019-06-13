@@ -17,5 +17,5 @@ void reqTemp(){
 }
 
 float getTemp() {
-  return oneWireTemp.getTempFByIndex(0);
+  return oneWireTemp.getTempCByIndex(0);
 }

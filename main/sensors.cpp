@@ -4,7 +4,8 @@
 //{}
 
 void Sensors::setup(unsigned long rate) {
-  setupTemp();
+  //setupTemp();
+  setRate(rate);
 }
 
 void Sensors::loop() {
@@ -24,7 +25,7 @@ void Sensors::loop() {
 
 // For sensors that require time to process.
 void Sensors::convert(){
-  Serial.print("converting....");
+  Serial.print("converting.... ");
   reqTemp();
 }
 
@@ -33,16 +34,19 @@ void Sensors::push() {
   StaticJsonDocument<capacity> doc;
   doc["st"] = getTemp();
   doc["l"] = 48.74;
-  doc["f"] = 0;
+  doc["f"] = flowPulse;
+  flowPulse = 0;
   doc["m"] = getMoisture();
   char payload[50];
   serializeJson(doc, payload);
-  int id = coap.put(IPAddress(192, 168, 0, 120), 5683, "sensors", payload);
-  Serial.print(strlen(payload));
-  Serial.print(": ");
-  Serial.println(payload);
+  int id = coap.put(serverAddress, 5683, "sensors", payload);
+  // Send: ip, port, route, coapType, method, token, tokenLen, payload, payloadLen, contentType
+  //int id = coap.send(serverAddress, 5683, "sensors", COAP_CON, COAP_POST, (uint8_t)223, (uint8_t)3, (uint8_t *)payload, (uint32_t)2, COAP_APPLICATION_JSON)
+  Serial.print("Sensor Data: ");
+  Serial.print(payload);
 }
-
+// IPAddress&, int, const char [8], COAP_TYPE, COAP_METHOD,    NULL,     int, uint8_t*,    size_t, COAP_CONTENT_TYPE
+// IPAddress , int, char,           COAP_TYPE, COAP_METHOD, uint8_t, uint8_t,  uint8_t, uint32_t , COAP_CONTENT_TYPE
 bool Sensors::state(){
   return running;
 }

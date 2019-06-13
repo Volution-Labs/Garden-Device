@@ -14,6 +14,8 @@
 // 3. Add storage of sensor
 // 4. Add time/scheduling
 
+volatile uint32_t flowPulse = 0;
+
 Preferences preferences;
 Sensors sensors;
 
@@ -30,8 +32,10 @@ void setup()
   wifiSSID = preferences.getString("ssid", WIFI_SSID);
   wifiPassword = preferences.getString("password", WIFI_PASSWORD);
   preferences.begin("server", false);
-  serverAddress = serverAddress.fromString(preferences.getString("ipaddr", SERVER_IP));
-  
+  serverAddress.fromString(preferences.getString("ipaddr", SERVER_IP));
+  preferences.begin("sensors", false);
+  sensors.setup(preferences.getInt("interval", 10000));
+
   Serial.begin(9600);
 
   WiFi.mode(WIFI_STA);
@@ -66,6 +70,6 @@ void loop()
 }
 
 void magnet_detect()
- {
-   Serial.println("detect");
- }
+{
+  flowPulse++;
+}
