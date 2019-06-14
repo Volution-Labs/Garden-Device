@@ -28,15 +28,16 @@ Valve valve(VALVE_PIN);
 
 void setup()
 {
+  Serial.begin(115200);
   preferences.begin("wifi", false);
   wifiSSID = preferences.getString("ssid", WIFI_SSID);
   wifiPassword = preferences.getString("password", WIFI_PASSWORD);
+  preferences.end();
   preferences.begin("server", false);
   serverAddress.fromString(preferences.getString("ipaddr", SERVER_IP));
+  preferences.end();
   preferences.begin("sensors", false);
-  sensors.setup(preferences.getInt("interval", 10000));
-
-  Serial.begin(9600);
+  sensors.setup(preferences.getULong("interval", 10000));
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(wifiSSID.c_str(), wifiPassword.c_str());

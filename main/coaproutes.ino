@@ -55,19 +55,21 @@ void handle_coap_config(CoapPacket &packet, IPAddress ip, int port) {
     const char *newIP = doc["serverIP"];
     serverAddress.fromString(newIP);
     preferences.begin("server", false);
-    int err = preferences.putString("ipaddr", newIP);
-    preferences.end();
+    int err = preferences.putString("ipaddr", String(newIP));
+  
     Serial.print("New server address: ");
-    Serial.println(serverAddress.toString());
+    Serial.println(preferences.getString("ipaddr", SERVER_IP));
+    preferences.end();
     coap.sendResponse(ip, port, packet.messageid, "ok", 2, COAP_CONTENT, COAP_TEXT_PLAIN, packet.token, 8);
   } else if (doc.containsKey("interval")){
     unsigned long interval;
     interval = atoi(doc["interval"]);
     sensors.setRate(interval);
     preferences.begin("sensors", false);
-    preferences.putInt("interval", interval);
+    preferences.putULong("interval", interval);
+    Serial.println("Sensor rate updated: ");
+    Serial.println(preferences.getULong("interval", 10000));
     preferences.end();
-    Serial.println("Sensor rate updated");
     coap.sendResponse(ip, port, packet.messageid, "ok", 2, COAP_CONTENT, COAP_TEXT_PLAIN, packet.token, 8);
   } else {
     coap.sendResponse(ip, port, packet.messageid, "Error: could not parse payload", 30, COAP_BAD_OPTION, COAP_TEXT_PLAIN, packet.token, 8);

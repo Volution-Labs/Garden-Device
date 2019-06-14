@@ -8,10 +8,9 @@ void setupMoisture(){
 // Returns calibrated reading of sensor in RH.
 float getMoisture(){
   const int air = 3440;
-  const int water = 0; // Fix me!!!
-  float val;
-  val = analogRead(34);
-  return val;
+  const int water = 1240; // Fix me, add config!!!
+  float val = analogRead(34);
+  return 100 - (((val - water) * 100) / (air - water));
 }
 
 //---Todo----
